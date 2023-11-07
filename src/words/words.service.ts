@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Word } from './word.entity';
-import { Repository } from 'typeorm';
+import { FindOptionsWhere, Repository } from 'typeorm';
 import { CreateWordDto } from './dtos/create-word.dto';
 import { User } from '../users/user.entity';
 
@@ -18,9 +18,9 @@ export class WordsService {
     return this.wordsRepo.save(word);
   }
 
-  async getAllWords(user: User) {
+  async getAllWords(user: User, filter?: FindOptionsWhere<Word>) {
     const words = await this.wordsRepo.find({
-      where: { user },
+      where: { ...filter, user },
     });
     return words;
   }

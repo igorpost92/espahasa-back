@@ -10,7 +10,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './users/user.entity';
 import { APP_PIPE } from '@nestjs/core';
 import { Word } from './words/word.entity';
+import { VerbsModule } from './verbs/verbs.module';
 import * as session from 'express-session';
+import { Verb } from './verbs/verb.entity';
 
 const cookieSession = require('cookie-session');
 
@@ -26,12 +28,13 @@ const cookieSecret = 'my-secret';
       database: 'espahasa',
       username: 'postgres',
       password: 'postgres',
-      entities: [User, Word],
+      entities: [User, Word, Verb],
       synchronize: true,
       // logging: 'all',
     }),
-    WordsModule,
     UsersModule,
+    WordsModule,
+    VerbsModule,
   ],
   providers: [
     {
