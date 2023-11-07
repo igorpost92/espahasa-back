@@ -21,7 +21,6 @@ export class WordsService {
   async getAllWords(user: User) {
     const words = await this.wordsRepo.find({
       where: { user },
-      relations: { user: true },
     });
     return words;
   }
@@ -31,13 +30,7 @@ export class WordsService {
       return null;
     }
 
-    // TODO: 2 queries with relations
-    const word = await this.wordsRepo.findOne({
-      where: { id },
-      relations: {
-        user: true,
-      },
-    });
+    const word = await this.wordsRepo.findOneBy({ id });
     return word;
   }
 

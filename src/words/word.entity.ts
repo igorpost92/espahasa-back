@@ -42,4 +42,7 @@ export class Word {
 
   @ManyToOne(() => User)
   user!: User;
+
+  @Column()
+  userId?: string;
 }
