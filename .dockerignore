@@ -1,0 +1,12 @@
+.idea
+.git
+.gitignore
+.dockerignore
+**/.DS_Store
+
+Dockerfile
+docker-compose.yaml
+
+/node_modules
+/dist
+/envs

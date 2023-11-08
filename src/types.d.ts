@@ -9,9 +9,19 @@ export interface AppSession {
   userId?: string;
 }
 
-declare module 'Express' {
-  export interface Request {
-    session?: AppSession;
-    currentUser?: User;
+// TODO: doesn't work inside docker
+// declare module 'Express' {
+//   export interface Request {
+//     session?: AppSession;
+//     currentUser?: User;
+//   }
+// }
+
+declare global {
+  namespace Express {
+    export interface Request {
+      session?: AppSession;
+      currentUser?: User;
+    }
   }
 }

@@ -18,7 +18,7 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "db:create": "docker run --name espahasa-back -p 5430:5432 -v ~/Documents/apps-db/espahasa:/var/lib/postgresql/data -e POSTGRES_PASSWORD=postgres -d postgres"
+    "deploy:local": "docker-compose --env-file envs/.local.env up -d --build"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",

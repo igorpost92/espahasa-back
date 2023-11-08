@@ -1,0 +1,26 @@
+services:
+  db:
+    container_name: ${COMPOSE_PROJECT_NAME}-db
+    image: postgres:16.0
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=espahasa
+    volumes:
+      - ~/Documents/apps-db/${COMPOSE_PROJECT_NAME}:/var/lib/postgresql/data
+    ports:
+      - "5400:5432"
+    restart: always
+
+  back:
+    container_name: ${COMPOSE_PROJECT_NAME}-back
+    build:
+      dockerfile: Dockerfile
+      args:
+        APP_PORT: $APP_PORT
+        DB_HOST: $DB_HOST
+        DB_PORT: $DB_PORT
+    image: ${COMPOSE_PROJECT_NAME}-back
+    restart: always
+    ports:
+      - "3100:$APP_PORT"

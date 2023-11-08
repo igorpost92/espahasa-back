@@ -19,12 +19,15 @@ const cookieSession = require('cookie-session');
 // TODO:
 const cookieSecret = 'my-secret';
 
+const dbHost = process.env.DB_HOST || 'localhost';
+const dbPort = Number(process.env.DB_PORT) || 5432;
+
 @Module({
   imports: [
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'localhost',
-      port: 5430,
+      host: dbHost,
+      port: dbPort,
       database: 'espahasa',
       username: 'postgres',
       password: 'postgres',
