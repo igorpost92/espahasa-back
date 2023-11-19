@@ -4,6 +4,9 @@ import { envVariables } from './envVariables';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  // TODO: research
+  // @ts-expect-error not defined
+  app.useBodyParser('json', { limit: '1mb' });
 
   app.setGlobalPrefix('api');
   app.enableCors({
