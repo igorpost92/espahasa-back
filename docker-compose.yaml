@@ -5,13 +5,14 @@ services:
     container_name: ${COMPOSE_PROJECT_NAME}-db
     image: postgres:16.0
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=espahasa
+      - PGPORT=$DB_PORT
+      - POSTGRES_DB=$DB_NAME
+      - POSTGRES_USER=$DB_USER
+      - POSTGRES_PASSWORD=$DB_PASSWORD
     volumes:
       - ~/Documents/apps-db/${COMPOSE_PROJECT_NAME}:/var/lib/postgresql/data
     ports:
-      - "5400:5432"
+      - ${DB_PORT}:${DB_PORT}
     restart: always
 
   back:
@@ -23,7 +24,11 @@ services:
         APP_PORT: $APP_PORT
         DB_HOST: $DB_HOST
         DB_PORT: $DB_PORT
+        DB_TYPE: $DB_TYPE
+        DB_NAME: $DB_NAME
+        DB_USER: $DB_USER
+        DB_PASSWORD: $DB_PASSWORD
     image: ${COMPOSE_PROJECT_NAME}-back
     restart: always
     ports:
-      - "3100:${APP_PORT}"
+      - ${APP_PORT}:${APP_PORT}

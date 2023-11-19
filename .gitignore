@@ -1,6 +1,6 @@
 requests.http
 
-/envs
+/envs/.env.prod
 
 # compiled output
 /dist

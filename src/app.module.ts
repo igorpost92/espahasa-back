@@ -19,22 +19,20 @@ import { CategoriesWords } from './categories/categories-words/categories-words.
 
 const cookieSession = require('cookie-session');
 
-// TODO:
+// TODO: to env
 const cookieSecret = 'my-secret';
-
-const dbHost = process.env.DB_HOST || 'localhost';
-const dbPort = Number(process.env.DB_PORT) || 5432;
 
 @Module({
   imports: [
     TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: dbHost,
-      port: dbPort,
-      database: 'espahasa',
-      username: 'postgres',
-      password: 'postgres',
+      type: envVariables.database.type,
+      host: envVariables.database.host,
+      port: envVariables.database.port,
+      database: envVariables.database.name,
+      username: envVariables.database.user,
+      password: envVariables.database.password,
       entities: [SystemLog, User, Word, Verb, Category, CategoriesWords],
+      // TODO: disable for prod
       synchronize: true,
       // logging: 'all',
     }),
