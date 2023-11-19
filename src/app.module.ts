@@ -7,6 +7,12 @@ import {
 import { WordsModule } from './words/words.module';
 import { UsersModule } from './users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import {
+  addTransactionalDataSource,
+  getDataSourceByName,
+} from 'typeorm-transactional';
+import { DataSource } from 'typeorm';
+import { DataSourceOptions } from 'typeorm/data-source/DataSourceOptions';
 import { User } from './users/user.entity';
 import { APP_PIPE } from '@nestjs/core';
 import { Word } from './words/word.entity';
@@ -27,17 +33,34 @@ const cookieSecret = 'my-secret';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type: envVariables.database.type,
-      host: envVariables.database.host,
-      port: envVariables.database.port,
-      database: envVariables.database.name,
-      username: envVariables.database.user,
-      password: envVariables.database.password,
-      entities: [SystemLog, User, Word, Verb, Category, CategoriesWords],
-      // TODO: disable for prod
-      synchronize: true,
-      // logging: 'all',
+    TypeOrmModule.forRootAsync({
+      useFactory() {
+        const config: Partial<DataSourceOptions> = {
+          type: envVariables.database.type,
+          host: envVariables.database.host,
+          port: envVariables.database.port,
+          database: envVariables.database.name,
+          username: envVariables.database.user,
+          password: envVariables.database.password,
+          entities: [SystemLog, User, Word, Verb, Category, CategoriesWords],
+          // TODO: disable for prod
+          synchronize: true,
+          // logging: 'all',
+        };
+
+        return config;
+      },
+      async dataSourceFactory(options) {
+        if (!options) {
+          throw new Error('Invalid options passed');
+        }
+
+        return (
+          // TODO: error if reconnect
+          getDataSourceByName('default') ||
+          addTransactionalDataSource(new DataSource(options))
+        );
+      },
     }),
     UsersModule,
     WordsModule,

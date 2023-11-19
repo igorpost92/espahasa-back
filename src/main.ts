@@ -1,8 +1,14 @@
 import { NestFactory } from '@nestjs/core';
+import {
+  initializeTransactionalContext,
+  StorageDriver,
+} from 'typeorm-transactional';
 import { AppModule } from './app.module';
 import { envVariables } from './envVariables';
 
 async function bootstrap() {
+  initializeTransactionalContext({ storageDriver: StorageDriver.AUTO });
+
   const app = await NestFactory.create(AppModule);
   // TODO: research
   // @ts-expect-error not defined

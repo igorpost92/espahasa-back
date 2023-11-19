@@ -20,6 +20,7 @@ import { PutCategoryDto } from './dtos/put-category.dto';
 import { SystemLogsService } from '../system-logs/system-logs.service';
 import { Serialize } from '../interceptors/serialize.interceptor';
 import { CategoryResponseDto } from './dtos/category-response.dto';
+import { Transactional } from 'typeorm-transactional';
 
 @Controller('categories')
 @UseGuards(AuthGuard)
@@ -59,8 +60,8 @@ export class CategoriesController {
   //   return this.categoriesService.createCategory(createCategoryDto, user);
   // }
 
-  // TODO: transaction
   @Put('bulk')
+  @Transactional()
   async importCategories(
     @Body(new ParseArrayPipe({ items: PutCategoryDto })) data: PutCategoryDto[],
     @CurrentUser() user: User,

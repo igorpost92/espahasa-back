@@ -23,6 +23,7 @@ import { UpdateWordDto } from './dtos/update-word.dto';
 import { Word } from './word.entity';
 import { PutWordDto } from './dtos/put-word.dto';
 import { SystemLogsService } from '../system-logs/system-logs.service';
+import { Transactional } from 'typeorm-transactional';
 
 @Controller('words')
 @UseGuards(AuthGuard)
@@ -60,8 +61,8 @@ export class WordsController {
   //   return this.wordsService.createWord(createWordDto, user);
   // }
 
-  // TODO: transaction
   @Put('bulk')
+  @Transactional()
   async importWords(
     @Body(new ParseArrayPipe({ items: PutWordDto })) data: PutWordDto[],
     @CurrentUser() user: User,

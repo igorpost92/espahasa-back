@@ -13,6 +13,7 @@ import { SystemLogsService } from '../../system-logs/system-logs.service';
 import { CurrentUser } from '../../users/decorators/current-user.decorator';
 import { User } from '../../users/user.entity';
 import { PutCategoriesWordsDto } from './dtos/put-categories-words.dto';
+import { Transactional } from 'typeorm-transactional';
 
 @Controller('categories-words')
 @UseGuards(AuthGuard)
@@ -27,8 +28,8 @@ export class CategoriesWordsController {
     return this.categoriesWordsService.getAll(user);
   }
 
-  // TODO: transaction
   @Put('bulk')
+  @Transactional()
   async importCategories(
     @Body(new ParseArrayPipe({ items: PutCategoriesWordsDto }))
     data: PutCategoriesWordsDto[],
