@@ -13,6 +13,9 @@ import { Word } from './words/word.entity';
 import { VerbsModule } from './verbs/verbs.module';
 import * as session from 'express-session';
 import { Verb } from './verbs/verb.entity';
+import { CategoriesModule } from './categories/categories.module';
+import { Category } from './categories/category.entity';
+import { CategoriesWords } from './categories/categories-words/categories-words.entity';
 
 const cookieSession = require('cookie-session');
 
@@ -31,13 +34,14 @@ const dbPort = Number(process.env.DB_PORT) || 5432;
       database: 'espahasa',
       username: 'postgres',
       password: 'postgres',
-      entities: [User, Word, Verb],
+      entities: [SystemLog, User, Word, Verb, Category, CategoriesWords],
       synchronize: true,
       // logging: 'all',
     }),
     UsersModule,
     WordsModule,
     VerbsModule,
+    CategoriesModule,
   ],
   providers: [
     {

@@ -1,28 +1,34 @@
-import { WordExampleDto } from './word-example.dto';
 import {
   IsDate,
   IsEnum,
   IsNumber,
   IsOptional,
   IsString,
+  IsUUID,
   Min,
   ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { Lang } from '../../models/lang.enum';
+import { WordExampleDto } from './word-example.dto';
 
-// TODO: all optional
-export class UpdateWordDto {
-  @IsOptional()
-  @IsString()
-  text?: string;
+export class PutWordDto {
+  @IsUUID()
+  id!: string;
 
-  @IsOptional()
+  @IsDate()
+  @Type(() => Date)
+  createdAt!: Date;
+
   @IsString()
-  meaning?: string;
+  text!: string;
+
+  @IsString()
+  meaning!: string;
 
   @IsOptional()
   @Min(0)
+  // TODO: to db
   @IsNumber({ maxDecimalPlaces: 0 })
   step?: number;
 
@@ -31,9 +37,8 @@ export class UpdateWordDto {
   @Type(() => Date)
   lastDate?: Date;
 
-  @IsOptional()
   @IsEnum(Lang)
-  lang?: Lang;
+  lang!: Lang;
 
   // TODO: enum
   @IsOptional()

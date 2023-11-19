@@ -9,15 +9,6 @@ import { User } from '../users/user.entity';
 export class WordsService {
   constructor(@InjectRepository(Word) private wordsRepo: Repository<Word>) {}
 
-  createWord(createWordDto: CreateWordDto, currentUser: User) {
-    const word = this.wordsRepo.create({
-      ...createWordDto,
-      user: currentUser,
-    });
-
-    return this.wordsRepo.save(word);
-  }
-
   async getAllWords(user: User, filter?: FindOptionsWhere<Word>) {
     const words = await this.wordsRepo.find({
       where: { ...filter, user },
@@ -30,16 +21,28 @@ export class WordsService {
       return null;
     }
 
-    const word = await this.wordsRepo.findOneBy({ id });
-    return word;
+    return this.wordsRepo.findOneBy({ id });
   }
 
-  saveWord(wordDto: Word) {
-    const word = this.wordsRepo.create(wordDto);
+  createWord(createWordDto: CreateWordDto, currentUser: User) {
+    const word = this.wordsRepo.create({
+      ...createWordDto,
+      user: currentUser,
+    });
+
     return this.wordsRepo.save(word);
+  }
+
+  saveWord(word: Word) {
+    const entry = this.wordsRepo.create(word);
+    return this.wordsRepo.save(entry);
   }
 
   deleteWord(word: Word) {
     return this.wordsRepo.remove(word);
+  }
+
+  deleteAllWords(user: User) {
+    return this.wordsRepo.delete({ user });
   }
 }

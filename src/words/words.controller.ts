@@ -9,6 +9,8 @@ import {
   UseGuards,
   Delete,
   Param,
+  UnauthorizedException,
+  ParseArrayPipe,
 } from '@nestjs/common';
 import { WordsService } from './words.service';
 import { CreateWordDto } from './dtos/create-word.dto';
@@ -19,17 +21,12 @@ import { Serialize } from '../interceptors/serialize.interceptor';
 import { WordResponseDto } from './dtos/word-response.dto';
 import { UpdateWordDto } from './dtos/update-word.dto';
 import { Word } from './word.entity';
+import { PutWordDto } from './dtos/put-word.dto';
 
 @Controller('words')
 @UseGuards(AuthGuard)
 export class WordsController {
   constructor(private wordsService: WordsService) {}
-
-  @Post()
-  @Serialize(WordResponseDto)
-  createWord(@Body() createWordDto: CreateWordDto, @CurrentUser() user: User) {
-    return this.wordsService.createWord(createWordDto, user);
-  }
 
   @Get()
   @Serialize(WordResponseDto)
@@ -37,59 +34,95 @@ export class WordsController {
     return this.wordsService.getAllWords(user);
   }
 
-  @Get(':id')
-  @Serialize(WordResponseDto)
-  async getWord(@Param('id') id: string, @CurrentUser() user: User) {
-    const word = await this.wordsService.getWord(id);
+  // @Get(':id')
+  // @Serialize(WordResponseDto)
+  // async getWord(@Param('id') id: string, @CurrentUser() user: User) {
+  //   const word = await this.wordsService.getWord(id);
+  //
+  //   if (!word) {
+  //     throw new NotFoundException('word not found');
+  //   }
+  //
+  //   if (user.id !== user.id) {
+  //     throw new ForbiddenException('word belongs to another user');
+  //   }
+  //
+  //   return word;
+  // }
 
-    if (!word) {
-      throw new NotFoundException('word not found');
-    }
+  // @Post()
+  // @Serialize(WordResponseDto)
+  // createWord(@Body() createWordDto: CreateWordDto, @CurrentUser() user: User) {
+  //   return this.wordsService.createWord(createWordDto, user);
+  // }
 
-    if (user.id !== user.id) {
-      throw new ForbiddenException('word belongs to another user');
-    }
-
-    return word;
-  }
-
-  @Put(':id')
-  @Serialize(WordResponseDto)
-  async updateWord(
-    @Param('id') id: string,
-    @Body() updateWordDto: UpdateWordDto,
+  // TODO: transaction
+  @Put('bulk')
+  async importWords(
+    @Body(new ParseArrayPipe({ items: PutWordDto })) data: PutWordDto[],
     @CurrentUser() user: User,
   ) {
-    const exisingWord = await this.wordsService.getWord(id);
+    for (const dataItem of data) {
+      const existingWord = await this.wordsService.getWord(dataItem.id);
 
-    if (!exisingWord) {
-      throw new NotFoundException('word not found');
+      if (existingWord && existingWord.userId !== user.id) {
+        throw new UnauthorizedException('Category belongs to another user');
+      }
     }
 
-    if (user.id !== exisingWord?.user.id) {
-      throw new ForbiddenException('word belongs to another user');
+    await this.wordsService.deleteAllWords(user);
+
+    let i = 0;
+
+    for (const dataItem of data) {
+      i++;
+      if (i > 1) {
+        throw 1;
+      }
+      await this.wordsService.saveWord({
+        ...dataItem,
+        userId: user.id,
+      });
     }
-
-    const updatedWord: Word = {
-      ...exisingWord,
-      ...updateWordDto,
-    };
-
-    return this.wordsService.saveWord(updatedWord);
   }
 
-  @Delete(':id')
-  async deleteWord(@Param('id') id: string, @CurrentUser() user: User) {
-    const exisingWord = await this.wordsService.getWord(id);
-
-    if (!exisingWord) {
-      throw new NotFoundException('word not found');
-    }
-
-    if (user.id !== exisingWord?.user.id) {
-      throw new ForbiddenException('word belongs to another user');
-    }
-
-    await this.wordsService.deleteWord(exisingWord);
-  }
+  // @Put(':id')
+  // @Serialize(WordResponseDto)
+  // async updateWord(
+  //   @Param('id') id: string,
+  //   @Body() updateWordDto: UpdateWordDto,
+  //   @CurrentUser() user: User,
+  // ) {
+  //   const exisingWord = await this.wordsService.getWord(id);
+  //
+  //   if (!exisingWord) {
+  //     throw new NotFoundException('word not found');
+  //   }
+  //
+  //   if (user.id !== exisingWord?.userId) {
+  //     throw new ForbiddenException('word belongs to another user');
+  //   }
+  //
+  //   const updatedWord: Word = {
+  //     ...exisingWord,
+  //     ...updateWordDto,
+  //   };
+  //
+  //   return this.wordsService.saveWord(updatedWord);
+  // }
+  //
+  // @Delete(':id')
+  // async deleteWord(@Param('id') id: string, @CurrentUser() user: User) {
+  //   const exisingWord = await this.wordsService.getWord(id);
+  //
+  //   if (!exisingWord) {
+  //     throw new NotFoundException('word not found');
+  //   }
+  //
+  //   if (user.id !== exisingWord?.userId) {
+  //     throw new ForbiddenException('word belongs to another user');
+  //   }
+  //
+  //   await this.wordsService.deleteWord(exisingWord);
+  // }
 }

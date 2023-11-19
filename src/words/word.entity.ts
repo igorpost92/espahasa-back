@@ -41,8 +41,8 @@ export class Word {
   examples?: WordExampleDto[];
 
   @ManyToOne(() => User)
-  user!: User;
+  user?: User;
 
   @Column()
-  userId?: string;
+  userId!: string;
 }
