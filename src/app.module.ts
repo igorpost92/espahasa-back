@@ -100,6 +100,7 @@ export class AppModule implements NestModule {
       .apply(
         cookieSession({
           keys: [cookieSecret],
+          sameSite: 'none',
         }),
       )
       .forRoutes('*');

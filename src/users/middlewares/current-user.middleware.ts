@@ -7,6 +7,16 @@ export class CurrentUserMiddleware implements NestMiddleware {
   constructor(private usersService: UsersService) {}
 
   async use(req: Request, res: Response, next: NextFunction) {
+    console.log(
+      'REQ: ',
+      req.originalUrl,
+      req.session,
+      'cookies',
+      req.cookies,
+      'headers',
+      req.headers,
+    );
+
     const userId = req.session?.userId;
 
     if (userId) {

@@ -5,6 +5,7 @@ import {
 } from 'typeorm-transactional';
 import { AppModule } from './app.module';
 import { envVariables } from './envVariables';
+import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   initializeTransactionalContext({ storageDriver: StorageDriver.AUTO });
@@ -20,6 +21,8 @@ async function bootstrap() {
     credentials: true,
     origin: true,
   });
+
+  app.use(cookieParser());
 
   const port = envVariables.appPort;
   await app.listen(port);
