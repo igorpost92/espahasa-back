@@ -10,7 +10,7 @@ export class Verb {
   @PrimaryColumn()
   wordId!: string;
 
-  // TODO
+  // TODO optional?
   @Column('json')
   data!: VerbDataModel;
 }
