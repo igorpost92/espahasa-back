@@ -22,11 +22,15 @@ import { WordResponseDto } from './dtos/word-response.dto';
 import { UpdateWordDto } from './dtos/update-word.dto';
 import { Word } from './word.entity';
 import { PutWordDto } from './dtos/put-word.dto';
+import { SystemLogsService } from '../system-logs/system-logs.service';
 
 @Controller('words')
 @UseGuards(AuthGuard)
 export class WordsController {
-  constructor(private wordsService: WordsService) {}
+  constructor(
+    private wordsService: WordsService,
+    private logsService: SystemLogsService,
+  ) {}
 
   @Get()
   @Serialize(WordResponseDto)
@@ -84,6 +88,8 @@ export class WordsController {
         userId: user.id,
       });
     }
+
+    this.logsService.log('upload words', user.id, 'upload');
   }
 
   // @Put(':id')

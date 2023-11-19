@@ -17,13 +17,17 @@ import { CurrentUser } from '../users/decorators/current-user.decorator';
 import { User } from '../users/user.entity';
 import { AuthGuard } from '../users/guards/auth.guard';
 import { PutCategoryDto } from './dtos/put-category.dto';
+import { SystemLogsService } from '../system-logs/system-logs.service';
 import { Serialize } from '../interceptors/serialize.interceptor';
 import { CategoryResponseDto } from './dtos/category-response.dto';
 
 @Controller('categories')
 @UseGuards(AuthGuard)
 export class CategoriesController {
-  constructor(private categoriesService: CategoriesService) {}
+  constructor(
+    private categoriesService: CategoriesService,
+    private logsService: SystemLogsService,
+  ) {}
 
   @Get()
   @Serialize(CategoryResponseDto)
@@ -79,5 +83,7 @@ export class CategoriesController {
         userId: user.id,
       });
     }
+
+    this.logsService.log('upload categories', user.id, 'upload');
   }
 }

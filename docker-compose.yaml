@@ -22,6 +22,7 @@ services:
       dockerfile: Dockerfile
       args:
         APP_PORT: $APP_PORT
+        LOGS_ENABLED: LOGS_ENABLED
         DB_HOST: $DB_HOST
         DB_PORT: $DB_PORT
         DB_TYPE: $DB_TYPE

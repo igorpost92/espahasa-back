@@ -16,6 +16,9 @@ import { Verb } from './verbs/verb.entity';
 import { CategoriesModule } from './categories/categories.module';
 import { Category } from './categories/category.entity';
 import { CategoriesWords } from './categories/categories-words/categories-words.entity';
+import { SystemLogsModule } from './system-logs/system-logs.module';
+import { SystemLog } from './system-logs/system-log.entity';
+import { envVariables } from './envVariables';
 
 const cookieSession = require('cookie-session');
 
@@ -40,6 +43,7 @@ const cookieSecret = 'my-secret';
     WordsModule,
     VerbsModule,
     CategoriesModule,
+    SystemLogsModule,
   ],
   providers: [
     {

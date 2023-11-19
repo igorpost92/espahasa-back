@@ -17,6 +17,7 @@ import { AppSession } from '../types';
 import { CurrentUser } from './decorators/current-user.decorator';
 import { User } from './user.entity';
 import { AuthGuard } from './guards/auth.guard';
+import { SystemLogsService } from '../system-logs/system-logs.service';
 
 const scrypt = promisify(_scrypt);
 
@@ -30,7 +31,10 @@ const hashPassword = async (password: string, salt: string) => {
 
 @Controller('users')
 export class UsersController {
-  constructor(private usersService: UsersService) {}
+  constructor(
+    private usersService: UsersService,
+    private logsService: SystemLogsService,
+  ) {}
 
   @Post()
   async signUp(
@@ -85,6 +89,7 @@ export class UsersController {
     }
 
     session.userId = user.id;
+    this.logsService.log('sign in', user.id);
   }
 
   @Delete('sessions')

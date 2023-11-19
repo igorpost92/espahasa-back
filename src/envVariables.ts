@@ -1,4 +1,5 @@
 const appPort = process.env.APP_PORT ?? 3000;
+const logsEnabled = process.env.LOGS_ENABLED === 'true';
 
 const dbHost = process.env.DB_HOST;
 const dbPort = Number(process.env.DB_PORT);
@@ -9,6 +10,7 @@ const dbPassword = process.env.DB_PASSWORD;
 
 export const envVariables = {
   appPort,
+  logsEnabled,
   database: {
     host: dbHost,
     port: dbPort,
