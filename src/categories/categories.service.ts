@@ -34,7 +34,7 @@ export class CategoriesService {
 
   saveCategory(dto: Category) {
     const category = this.categoriesRepo.create(dto);
-    return this.categoriesRepo.save([category, category], {});
+    return this.categoriesRepo.save(category, {});
   }
 
   deleteCategory(category: Category) {

@@ -16,13 +16,13 @@ export class CategoriesWords {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  @ManyToOne(() => Category)
+  @ManyToOne(() => Category, { onDelete: 'CASCADE' })
   category?: Category;
 
   @Column()
   categoryId!: string;
 
-  @ManyToOne(() => Word)
+  @ManyToOne(() => Word, { onDelete: 'CASCADE' })
   word?: Word;
 
   @Column()

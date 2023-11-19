@@ -77,13 +77,7 @@ export class WordsController {
 
     await this.wordsService.deleteAllWords(user);
 
-    let i = 0;
-
     for (const dataItem of data) {
-      i++;
-      if (i > 1) {
-        throw 1;
-      }
       await this.wordsService.saveWord({
         ...dataItem,
         userId: user.id,
