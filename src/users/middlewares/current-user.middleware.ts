@@ -1,28 +1,19 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
-import { UsersService } from '../users.service';
+import { sessionIdHeader } from '../../constants/session-id-header';
+import { UserSessionsService } from '../user-sessions.service';
 
 @Injectable()
 export class CurrentUserMiddleware implements NestMiddleware {
-  constructor(private usersService: UsersService) {}
+  constructor(private sessionsService: UserSessionsService) {}
 
   async use(req: Request, res: Response, next: NextFunction) {
-    console.log(
-      'REQ: ',
-      req.originalUrl,
-      req.session,
-      'cookies',
-      req.cookies,
-      'headers',
-      req.headers,
-    );
+    const sessionId = req.headers[sessionIdHeader] as string | undefined;
 
-    const userId = req.session?.userId;
-
-    if (userId) {
-      const user = await this.usersService.getUser(userId);
-      if (user) {
-        req.currentUser = user;
+    if (sessionId) {
+      const session = await this.sessionsService.getSession(sessionId);
+      if (session?.user) {
+        req.currentUser = session.user;
       }
     }
 

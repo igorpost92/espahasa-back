@@ -4,20 +4,20 @@ import {
   Controller,
   Delete,
   Get,
+  Headers,
   NotFoundException,
   Post,
-  Session,
   UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { promisify } from 'util';
 import { randomBytes, scrypt as _scrypt } from 'crypto';
-import { AppSession } from '../types';
 import { CurrentUser } from './decorators/current-user.decorator';
 import { User } from './user.entity';
 import { AuthGuard } from './guards/auth.guard';
-import { SystemLogsService } from '../system-logs/system-logs.service';
+import { UserSessionsService } from './user-sessions.service';
+import { sessionIdHeader } from '../constants/session-id-header';
 
 const scrypt = promisify(_scrypt);
 
@@ -33,14 +33,11 @@ const hashPassword = async (password: string, salt: string) => {
 export class UsersController {
   constructor(
     private usersService: UsersService,
-    private logsService: SystemLogsService,
+    private userSessionsService: UserSessionsService,
   ) {}
 
   @Post()
-  async signUp(
-    @Body() createUserDto: CreateUserDto,
-    @Session() session: AppSession,
-  ) {
+  async signUp(@Body() createUserDto: CreateUserDto) {
     const { name } = createUserDto;
 
     const existingUser = await this.usersService.findUserByName(name);
@@ -57,7 +54,8 @@ export class UsersController {
       password: hashedPassword,
     });
 
-    session.userId = user.id;
+    const session = await this.userSessionsService.createSession(user);
+    return { sessionId: session.id };
   }
 
   // TODO: del
@@ -71,7 +69,6 @@ export class UsersController {
   async signIn(
     // TODO: another dto
     @Body() createUserDto: CreateUserDto,
-    @Session() session: AppSession,
   ) {
     const { name } = createUserDto;
 
@@ -88,13 +85,13 @@ export class UsersController {
       throw new BadRequestException('wrong password');
     }
 
-    session.userId = user.id;
-    this.logsService.log('sign in', user.id);
+    const session = await this.userSessionsService.createSession(user);
+    return { sessionId: session.id };
   }
 
   @Delete('sessions')
-  signOut(@Session() session: AppSession) {
-    // TODO: clear
-    session.userId = undefined;
+  async signOut(@Headers(sessionIdHeader) sessionId: string) {
+    // TODO: if empty
+    await this.userSessionsService.deleteSession(sessionId);
   }
 }

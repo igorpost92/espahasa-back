@@ -9,6 +9,7 @@ import { SuperAgentTest } from 'supertest';
 import { initializeTestApp } from './shared/initialize-app';
 import { CategoriesService } from '../src/categories/categories.service';
 import { PutCategoryDto } from '../src/categories/dtos/put-category.dto';
+import { sessionIdHeader } from '../src/constants/session-id-header';
 
 describe('categories-controller', () => {
   let app: INestApplication;
@@ -26,7 +27,10 @@ describe('categories-controller', () => {
     const categoriesRepo: Repository<Word> = app.get(getRepositoryToken(Word));
 
     const anotherUserDto: CreateUserDto = { name: 'another', password: '123' };
-    await agent.post('/users').send(anotherUserDto).expect(201);
+    const {
+      body: { sessionId },
+    } = await agent.post('/users').send(anotherUserDto).expect(201);
+    agent.set(sessionIdHeader, sessionId);
 
     const categories: PutCategoryDto[] = [
       {
@@ -37,9 +41,6 @@ describe('categories-controller', () => {
     ];
 
     await agent.put('/categories/bulk').send(categories).expect(200);
-
-    const res = await agent.get('/categories').send().expect(200);
-
-    console.log(res.body);
+    await agent.get('/categories').send().expect(200);
   });
 });

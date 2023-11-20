@@ -5,7 +5,6 @@ import {
 } from 'typeorm-transactional';
 import { AppModule } from './app.module';
 import { envVariables } from './envVariables';
-import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   initializeTransactionalContext({ storageDriver: StorageDriver.AUTO });
@@ -16,13 +15,7 @@ async function bootstrap() {
   app.useBodyParser('json', { limit: '1mb' });
 
   app.setGlobalPrefix('api');
-  app.enableCors({
-    // TODO: research
-    credentials: true,
-    origin: true,
-  });
-
-  app.use(cookieParser());
+  app.enableCors();
 
   const port = envVariables.appPort;
   await app.listen(port);

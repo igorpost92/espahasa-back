@@ -17,7 +17,6 @@ import { User } from './users/user.entity';
 import { APP_PIPE } from '@nestjs/core';
 import { Word } from './words/word.entity';
 import { VerbsModule } from './verbs/verbs.module';
-import * as session from 'express-session';
 import { Verb } from './verbs/verb.entity';
 import { CategoriesModule } from './categories/categories.module';
 import { Category } from './categories/category.entity';
@@ -25,6 +24,7 @@ import { CategoriesWords } from './categories/categories-words/categories-words.
 import { SystemLogsModule } from './system-logs/system-logs.module';
 import { SystemLog } from './system-logs/system-log.entity';
 import { envVariables } from './envVariables';
+import { UserSession } from './users/user-session.entity';
 
 const cookieSession = require('cookie-session');
 
@@ -42,7 +42,15 @@ const cookieSecret = 'my-secret';
           database: envVariables.database.name,
           username: envVariables.database.user,
           password: envVariables.database.password,
-          entities: [SystemLog, User, Word, Verb, Category, CategoriesWords],
+          entities: [
+            User,
+            UserSession,
+            SystemLog,
+            Word,
+            Verb,
+            Category,
+            CategoriesWords,
+          ],
           // TODO: disable for prod
           synchronize: true,
           // logging: 'all',
@@ -82,27 +90,14 @@ const cookieSecret = 'my-secret';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    // TODO: persists only per session
+    // TODO: after https
     // consumer
     //   .apply(
-    //     session({
-    //       secret: cookieSecret,
-    //       resave: false,
-    //       saveUninitialized: false,
-    //       cookie: {
-    //         maxAge: 1000 * 60 * 60 * 24 * 365,
-    //       },
+    //     cookieSession({
+    //       keys: [cookieSecret],
+    //       sameSite: 'none',
     //     }),
     //   )
     //   .forRoutes('*');
-
-    consumer
-      .apply(
-        cookieSession({
-          keys: [cookieSecret],
-          sameSite: 'none',
-        }),
-      )
-      .forRoutes('*');
   }
 }

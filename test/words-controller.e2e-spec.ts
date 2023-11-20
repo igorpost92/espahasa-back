@@ -9,6 +9,7 @@ import { WordsService } from '../src/words/words.service';
 import { UsersService } from '../src/users/users.service';
 import { initializeTestApp } from './shared/initialize-app';
 import { SuperAgentTest } from 'supertest';
+import { sessionIdHeader } from '../src/constants/session-id-header';
 
 describe('words-controller', () => {
   let app: INestApplication;
@@ -40,7 +41,10 @@ describe('words-controller', () => {
     });
 
     const user: CreateUserDto = { name: 'second', password: '111' };
-    await agent.post('/users').send(user);
+    const {
+      body: { sessionId },
+    } = await agent.post('/users').send(user);
+    agent.set(sessionIdHeader, sessionId);
 
     const userWord: PutWordDto = {
       id: '22222222-2222-2222-2222-222222222222',
@@ -53,7 +57,7 @@ describe('words-controller', () => {
     await agent.put('/words/bulk').send([userWord]).expect(200);
 
     let allWords = await wordsRepo.find();
-    expect(allWords.length).toEqual(2);
+    expect(allWords).toHaveLength(2);
     // TODO: without indices
     expect(allWords[0].id).toEqual(anotherWord.id);
     expect(allWords[1].id).toEqual(userWord.id);
@@ -62,7 +66,7 @@ describe('words-controller', () => {
     await agent.put('/words/bulk').send([]).expect(200);
 
     allWords = await wordsRepo.find();
-    expect(allWords.length).toEqual(1);
+    expect(allWords).toHaveLength(1);
     expect(allWords[0].id).toEqual(anotherWord.id);
 
     // shouldn't allow to change entry of another user
@@ -72,7 +76,7 @@ describe('words-controller', () => {
       .expect(401);
 
     allWords = await wordsRepo.find();
-    expect(allWords.length).toEqual(1);
+    expect(allWords).toHaveLength(1);
     expect(allWords[0].id).toEqual(anotherWord.id);
 
     // should remove those words that are not in the new list
@@ -84,7 +88,7 @@ describe('words-controller', () => {
       .expect(200);
 
     allWords = await wordsRepo.find();
-    expect(allWords.length).toEqual(2);
+    expect(allWords).toHaveLength(2);
     expect(allWords[0].id).toEqual(anotherWord.id);
     expect(allWords[1].id).toEqual(newWordId);
   });
