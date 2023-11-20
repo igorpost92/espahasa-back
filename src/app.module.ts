@@ -25,6 +25,7 @@ import { SystemLogsModule } from './system-logs/system-logs.module';
 import { SystemLog } from './system-logs/system-log.entity';
 import { envVariables } from './envVariables';
 import { UserSession } from './users/user-session.entity';
+import { LoggingMiddleware } from './middlewares/logging.middleware';
 
 const cookieSession = require('cookie-session');
 
@@ -90,6 +91,8 @@ const cookieSecret = 'my-secret';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggingMiddleware).forRoutes('*');
+
     // TODO: after https
     // consumer
     //   .apply(
