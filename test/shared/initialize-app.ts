@@ -14,6 +14,8 @@ export const initializeTestApp = async () => {
     imports: [AppModule],
   }).compile();
 
+  // TODO: mock logs server
+
   const app = moduleRef.createNestApplication();
   await app.init();
 
