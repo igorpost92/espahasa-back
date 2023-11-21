@@ -55,6 +55,6 @@ export class CategoriesWordsController {
     await this.categoriesWordsService.deleteAll(user);
     await this.categoriesWordsService.addMany(data);
 
-    this.logsService.log('upload categories-words', user.id, 'upload');
+    this.logsService.log('upload categories-words', { tag: 'upload' });
   }
 }

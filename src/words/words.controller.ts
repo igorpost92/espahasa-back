@@ -84,7 +84,7 @@ export class WordsController {
       });
     }
 
-    this.logsService.log('upload words', user.id, 'upload');
+    this.logsService.log('upload words', { tag: 'upload' });
   }
 
   // @Put(':id')

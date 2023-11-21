@@ -4,6 +4,7 @@ import {
   Entity,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { LoggingMessageType } from './logging-message-type';
 
 @Entity()
 export class SystemLog {
@@ -20,5 +21,9 @@ export class SystemLog {
   userId?: string;
 
   @Column()
-  info!: string;
+  message!: string;
+
+  // TODO: not nullable
+  @Column({ nullable: true, default: 'log' })
+  type!: LoggingMessageType;
 }

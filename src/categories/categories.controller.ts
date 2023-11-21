@@ -85,6 +85,6 @@ export class CategoriesController {
       });
     }
 
-    this.logsService.log('upload categories', user.id, 'upload');
+    this.logsService.log('upload categories', { tag: 'upload' });
   }
 }

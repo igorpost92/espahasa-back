@@ -2,6 +2,7 @@ import { Injectable, NestMiddleware } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
 import { sessionIdHeader } from '../../constants/session-id-header';
 import { UserSessionsService } from '../user-sessions.service';
+import { userAsyncLocalStorage } from '../async-storages/user.async-storage';
 
 @Injectable()
 export class CurrentUserMiddleware implements NestMiddleware {
@@ -17,6 +18,8 @@ export class CurrentUserMiddleware implements NestMiddleware {
       }
     }
 
-    next();
+    userAsyncLocalStorage.run({ currentUser: req.currentUser }, async () => {
+      next();
+    });
   }
 }
