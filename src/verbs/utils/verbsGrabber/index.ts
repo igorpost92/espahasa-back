@@ -1,21 +1,13 @@
 import { JSDOM } from 'jsdom';
 import { verbsConfigByTitles } from './verbsConfig';
+import { VerbDataModel } from '../../verb-data.model';
 
-// TODO: types
-type WordItem = Record<string, string[]>;
-
-// TODO: types
-interface TensesData {
-  wordId: string;
-  data: any; // TODO: types
-}
-
-const getVerbData = async (verb: string) => {
+export const stealVerb = async (verb: string) => {
   const url = encodeURI(
     `https://glagol.reverso.net/спряжение-испанский-глагол-${verb}.html`,
   ).trim();
 
-  const result: WordItem = {};
+  const result: VerbDataModel = {};
 
   const dom = await JSDOM.fromURL(url);
 
@@ -41,30 +33,6 @@ const getVerbData = async (verb: string) => {
       result[config.key] = values;
     }
   });
-
-  return result;
-};
-
-interface WordDto {
-  id: string;
-  text: string;
-}
-
-export const stealVerbs = async (verbs: WordDto[]) => {
-  const result: TensesData[] = [];
-
-  // TODO: run in parallel
-  for (let i = 0; i < verbs.length; i++) {
-    const { id, text } = verbs[i];
-
-    try {
-      const data = await getVerbData(text);
-      console.log(`${i + 1}/${verbs.length}: ${text}`);
-      result.push({ wordId: id, data });
-    } catch (e) {
-      console.log('\n', 'error when loading: ', text);
-    }
-  }
 
   return result;
 };

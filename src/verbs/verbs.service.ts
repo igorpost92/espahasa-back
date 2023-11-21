@@ -20,7 +20,7 @@ export class VerbsService {
     return this.verbsRepo.find(findOptions);
   }
 
-  saveBulk(verbs: Verb[]) {
-    return this.verbsRepo.save(verbs);
+  saveVerb(verb: Verb) {
+    return this.verbsRepo.save(verb);
   }
 }

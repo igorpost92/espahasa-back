@@ -5,12 +5,11 @@ import { VerbDataModel } from './verb-data.model';
 @Entity()
 export class Verb {
   @ManyToOne(() => Word)
-  word!: Word;
+  word?: Word;
 
   @PrimaryColumn()
   wordId!: string;
 
-  // TODO optional?
   @Column('json')
   data!: VerbDataModel;
 }

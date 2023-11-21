@@ -7,6 +7,7 @@ import {
 } from 'typeorm';
 import { User } from '../users/user.entity';
 import { WordExampleDto } from './dtos/word-example.dto';
+import { Lang } from '../models/lang.enum';
 
 @Entity()
 export class Word {
@@ -30,7 +31,7 @@ export class Word {
 
   // TODO: enum
   @Column()
-  lang!: string;
+  lang!: Lang;
 
   // TODO: enum
   @Column({ nullable: true })
