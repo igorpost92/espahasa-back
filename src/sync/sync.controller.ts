@@ -18,6 +18,7 @@ import { CategoriesWords } from '../categories/categories-words/categories-words
 import { CurrentUser } from '../users/decorators/current-user.decorator';
 import { User } from '../users/user.entity';
 import { AuthGuard } from '../users/guards/auth.guard';
+import { SystemLogsService } from '../system-logs/system-logs.service';
 
 @Controller('sync')
 @UseGuards(AuthGuard)
@@ -25,6 +26,7 @@ export class SyncController {
   constructor(
     @InjectRepository(Envelope) private repo: Repository<Envelope>,
     @InjectDataSource() private dataSource: DataSource,
+    private logsService: SystemLogsService,
   ) {}
 
   @Post('envelope')
@@ -38,6 +40,8 @@ export class SyncController {
       envelopeId,
       data,
     });
+
+    this.logsService.log('sync upload envelope', { tag: 'sync' });
   }
 
   @Post('envelope/:id/sync')
@@ -87,5 +91,7 @@ export class SyncController {
     );
 
     await this.repo.delete({ envelopeId });
+
+    this.logsService.log('sync done', { tag: 'sync' });
   }
 }
