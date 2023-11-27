@@ -26,6 +26,8 @@ import { SystemLog } from './system-logs/system-log.entity';
 import { envVariables } from './envVariables';
 import { UserSession } from './users/user-session.entity';
 import { LoggingMiddleware } from './middlewares/logging.middleware';
+import { SyncModule } from './sync/sync.module';
+import { Envelope } from './sync/envelope.entity';
 
 const cookieSession = require('cookie-session');
 
@@ -51,6 +53,7 @@ const cookieSecret = 'my-secret';
             Verb,
             Category,
             CategoriesWords,
+            Envelope,
           ],
           // TODO: disable for prod
           synchronize: true,
@@ -76,6 +79,7 @@ const cookieSecret = 'my-secret';
     VerbsModule,
     CategoriesModule,
     SystemLogsModule,
+    SyncModule,
   ],
   providers: [
     {
