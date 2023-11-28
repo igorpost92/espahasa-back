@@ -7,6 +7,7 @@ import {
 import { WordsModule } from './words/words.module';
 import { UsersModule } from './users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import {
   addTransactionalDataSource,
   getDataSourceByName,
@@ -40,6 +41,7 @@ import { Envelope } from './sync/envelope.entity';
           database: envVariables.database.name,
           username: envVariables.database.user,
           password: envVariables.database.password,
+          namingStrategy: new SnakeNamingStrategy(),
           entities: [
             User,
             UserSession,
