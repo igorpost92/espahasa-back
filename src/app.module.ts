@@ -29,11 +29,6 @@ import { LoggingMiddleware } from './middlewares/logging.middleware';
 import { SyncModule } from './sync/sync.module';
 import { Envelope } from './sync/envelope.entity';
 
-const cookieSession = require('cookie-session');
-
-// TODO: to env
-const cookieSecret = 'my-secret';
-
 @Module({
   imports: [
     TypeOrmModule.forRootAsync({
@@ -96,15 +91,5 @@ const cookieSecret = 'my-secret';
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(LoggingMiddleware).forRoutes('*');
-
-    // TODO: after https
-    // consumer
-    //   .apply(
-    //     cookieSession({
-    //       keys: [cookieSecret],
-    //       sameSite: 'none',
-    //     }),
-    //   )
-    //   .forRoutes('*');
   }
 }
