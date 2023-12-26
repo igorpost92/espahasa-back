@@ -15,7 +15,12 @@ async function bootstrap() {
   app.useBodyParser('json', { limit: '1mb' });
 
   app.setGlobalPrefix('api');
-  app.enableCors();
+  app.enableCors({
+    origin: true,
+    allowedHeaders: '*',
+    // TODO:
+    credentials: true,
+  });
 
   const port = envVariables.appPort;
   await app.listen(port);

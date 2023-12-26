@@ -61,12 +61,12 @@ export class SyncController {
 
     const mergedData = entries.flatMap((item) => item.data);
 
-    const words = mergedData.filter((item) => item.entryType === 'word');
+    const words = mergedData.filter((item) => item.entryType === 'words');
     const categories = mergedData.filter(
-      (item) => item.entryType === 'category',
+      (item) => item.entryType === 'categories',
     );
     const categoriesWords = mergedData.filter(
-      (item) => item.entryType === 'word-in-category',
+      (item) => item.entryType === 'categories_words',
     );
 
     const parseList = async (repo: Repository<any>, list: any[]) => {
