@@ -1,3 +1,4 @@
+import * as fs from 'fs/promises';
 import { NestFactory } from '@nestjs/core';
 import {
   initializeTransactionalContext,
@@ -5,11 +6,32 @@ import {
 } from 'typeorm-transactional';
 import { AppModule } from './app.module';
 import { envVariables } from './envVariables';
+import { NestApplicationOptions } from '@nestjs/common';
+
+const getHttpsOptions = async () => {
+  if (!envVariables.https) {
+    return;
+  }
+
+  const { keyPath, certPath } = envVariables.https;
+
+  const key = await fs.readFile(keyPath);
+  const cert = await fs.readFile(certPath);
+
+  const httpsOptions: NestApplicationOptions['httpsOptions'] = {
+    key,
+    cert,
+  };
+
+  return httpsOptions;
+};
 
 async function bootstrap() {
   initializeTransactionalContext({ storageDriver: StorageDriver.AUTO });
 
-  const app = await NestFactory.create(AppModule);
+  const httpsOptions = await getHttpsOptions();
+
+  const app = await NestFactory.create(AppModule, { httpsOptions });
   // TODO: research
   // @ts-expect-error not defined
   app.useBodyParser('json', { limit: '1mb' });

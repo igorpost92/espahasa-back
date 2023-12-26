@@ -29,6 +29,8 @@ services:
         DB_NAME: $DB_NAME
         DB_USER: $DB_USER
         DB_PASSWORD: $DB_PASSWORD
+        HTTPS_KEY_PATH: $HTTPS_KEY_PATH
+        HTTPS_CERT_PATH: $HTTPS_CERT_PATH
     image: ${COMPOSE_PROJECT_NAME}-back
     restart: always
     ports:

@@ -1,6 +1,14 @@
 FROM node:16-alpine
 WORKDIR /app
+
+#todo nest is not command
+#RUN yarn install --production
+
+COPY package.json .
+COPY yarn.lock .
+RUN yarn install
 COPY . .
+RUN yarn build
 
 ARG APP_PORT
 ARG DB_HOST
@@ -10,6 +18,8 @@ ARG DB_NAME
 ARG DB_USER
 ARG DB_PASSWORD
 ARG LOGS_ENABLED
+ARG HTTPS_CERT_PATH
+ARG HTTPS_KEY_PATH
 
 ENV APP_PORT=$APP_PORT
 ENV DB_HOST=$DB_HOST
@@ -19,11 +29,8 @@ ENV DB_NAME=$DB_NAME
 ENV DB_USER=$DB_USER
 ENV DB_PASSWORD=$DB_PASSWORD
 ENV LOGS_ENABLED=$LOGS_ENABLED
+ENV HTTPS_CERT_PATH=$HTTPS_CERT_PATH
+ENV HTTPS_KEY_PATH=$HTTPS_KEY_PATH
 
-#todo nest is not command
-#RUN yarn install --production
-
-RUN yarn install
-RUN yarn build
 CMD ["yarn", "start:prod"]
 EXPOSE $APP_PORT
