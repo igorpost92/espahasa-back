@@ -28,6 +28,7 @@ import { UserSession } from './users/user-session.entity';
 import { LoggingMiddleware } from './middlewares/logging.middleware';
 import { SyncModule } from './sync/sync.module';
 import { Envelope } from './sync/envelope.entity';
+import { FiestaGateway } from './fiesta/fiesta.gateway';
 
 @Module({
   imports: [
@@ -86,6 +87,7 @@ import { Envelope } from './sync/envelope.entity';
         // transform: true,
       }),
     },
+    FiestaGateway,
   ],
 })
 export class AppModule implements NestModule {
